@@ -1,0 +1,32 @@
+wrote /tmp/clean/partC_palette.png 
+
+matplotlib tab10, first four
+  normal  closest pair  S2 #FF7F0E vs S4 #D62728   ΔE  18.6   clear
+  deutan  closest pair  S3 #2CA02C vs S4 #D62728   ΔE   4.1   FAILS — same colour
+  protan  closest pair  S2 #FF7F0E vs S3 #2CA02C   ΔE   0.7   FAILS — same colour
+  tritan  closest pair  S1 #1F77B4 vs S3 #2CA02C   ΔE   6.7   needs a second channel
+
+The course palette (3 slots + the 4th)
+  normal  closest pair  S2 #D55E00 vs S4 #CC79A7   ΔE  16.4   clear
+  deutan  closest pair  S3 #009E73 vs S4 #CC79A7   ΔE   7.5   needs a second channel
+  protan  closest pair  S1 #0072B2 vs S4 #CC79A7   ΔE   9.5   ok
+  tritan  closest pair  S1 #0072B2 vs S3 #009E73   ΔE   8.4   ok
+
+Q3 - worst pair per palette across all four vision types
+  matplotlib tab10, first four   S2 #FF7F0E vs S3 #2CA02C under protan: dE 0.7 (FAILS — same colour)
+  course palette + 4th slot      S3 #009E73 vs S4 #CC79A7 under deutan: dE 7.5 (needs a second channel)
+  course palette, 3 slots only   S1 #0072B2 vs S3 #009E73 under tritan: dE 8.4 (ok)
+
+Q3 reading: tab10 collapses badly. Under protanopia the orange and green are 0.7 apart (the same
+colour) and under deuteranopia green and red are 4.1 apart. That is the red/green failure.
+The course palette has a weak pair too: the 4th slot (#CC79A7, pink) against the green (#009E73)
+under deuteranopia, dE 7.5, inside the 6-8 band that is legal ONLY with a second encoding. So
+the pink may appear only with direct labels, a different marker or a table view, and it falls
+below 3:1 contrast on white, so never as a thin line on its own. The 3-slot set never drops
+below dE 8.4 (tritan), which clears the 8 target.
+
+Q4 - my rule for more than three categories:
+  Three colours is the ceiling for colour alone. Past three I keep the three-slot palette and
+  add a second channel instead of another hue: marker shape (vizlib.MARKERS), direct labels
+  at the line ends, or small multiples / a sorted table. If two categories can only be told
+  apart by colour, the chart is not finished.

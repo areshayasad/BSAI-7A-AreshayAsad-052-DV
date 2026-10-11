@@ -1,0 +1,35 @@
+PART B - Q1: the audit table
+
+chart                       subject  dim data_effect graphic_effect lie_factor            verdict LF_if_dim_left_at_1
+    A            Corporate tax rate    1       +6.7%        +500.0%      75.00 exaggerates 75.00x               75.00
+    B Federal health budget (Rs bn)    2      +50.0%        +125.0%       2.50  exaggerates 2.50x                1.00
+    C        Export earnings ($ bn)    1      +20.0%         +20.0%       1.00             honest                1.00
+    D           Air-pollution index    1      +50.0%         +12.5%       0.25 understates (0.25)                0.25
+    E    City population (millions)    2     +300.0%       +1500.0%       5.00  exaggerates 5.00x                1.00
+
+Q2: the honest one is chart ['C'].
+    A  bars start at a 29.6 baseline, so only the tips show: a 6.7% rise is drawn as a 500% rise.
+    B  a coin icon scaled 1.5x in height AND width: the ink is the area, which grew 2.25x.
+    D  bars 8 -> 9 cm for a 100 -> 150 rise: the ink barely moves, the rise is squeezed.
+    E  bubble RADIUS set proportional to value: radius x4 means AREA x16.
+
+Q3: ink_dimension = 2 for ['B', 'E']
+    Leave it at 1 and you measure the side or radius, not the ink the eye reads as size;
+    B and E would both print LF = 1.00 and be passed as honest when they are 2.5x and 5x.
+
+Q4: understated chart(s): ['D']  (LF = 0.25)
+    Subject: air-pollution index, up 50%, drawn as up 12.5%. The file does not say WHY the ink
+    barely moves (a compressed or offset scale would do it), only that it does. It is still a
+    distortion: a reader sees a calm change where the data show a 50% rise, and has no way to
+    know. Who benefits is an inference, not something the data say: whoever would rather the
+    pollution rise looked small - an agency or an industry, depending on who published it.
+
+Q5: chart F (the dual-axis chart from Part A, case 7)
+    revenue line: data +50.0%, ink +1300%, LF 26.0
+    cost line:    data +20.5%, ink +225%, LF 11.0
+    One chart, two Lie Factors (26.0 and 11.0), because each line has its own axis. The formula
+    assumes ONE rule turning data into ink. With twin axes there are two rules, so there is no
+    single LF for the chart. And the claim ('cost was higher until May') is about the GAP between
+    the lines, which depends only on the two limits the analyst picked. I cannot compute an honest
+    number for that, and the reason is the point: the picture is not measuring anything shared.
+    Data: revenue above cost in all 6 months; surplus [8, 12, 14, 17, 20, 25] PKR m. Never a loss.
