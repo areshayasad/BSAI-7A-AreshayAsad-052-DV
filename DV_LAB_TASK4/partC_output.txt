@@ -1,0 +1,52 @@
+==============================================================================
+C.1  THE THREE CONDITIONS (slide 32), TESTED IN CODE
+     1 exclusive parts   2 a meaningful whole   3 the share IS the question
+==============================================================================
+
+(a) case08_channel_attrib.csv - the four touch_* columns
+    1 exclusive?     False  - 1,105 of 4,000 customers (27.6%) carry two or more flags; 0 carry none
+      shares: search 42.6%, social 32.3%, email 27.5%, direct 28.6%
+      sum = 130.98%  (a pie needs exactly 100)
+    2 meaningful whole? No. 'All customers' is the whole, but each slice is a
+      fraction OF THAT WHOLE, not a part OF it: the slices do not partition it.
+    3 share the question? The question is 'how many customers does each channel
+      reach' - reach, not a split of a total.
+    VERDICT: NEITHER as parts of a whole. A pie is illegal (131%). A sorted bar
+      chart is legal only if it is labelled 'customers reached (%)', each bar
+      read against 100%, never as slices of one - or better, split each bar into
+      'only this channel' vs 'also others' (Part A case 8).
+
+(b) shares_eight.csv - eight sub-categories
+    1 exclusive?     True - every (de-duplicated) SKU sits in exactly one sub-category (True); sum = 100.000000%
+    2 meaningful whole? Yes: net revenue of the whole catalogue; there are exactly
+      eight sub-categories, so 'the eight-category total' is the whole catalogue.
+    3 share the question? Partly. 'Where is the mass' is a share question, but the
+      task is to RANK eight slices. Eight is above the ~5 a pie can carry, and the
+      middle is crowded: the gaps between neighbours (largest first) are
+      6.2, 3.4, 1.9, 1.9, 2.0, 3.1, 3.7 points; the smallest is 1.9.
+    VERDICT: legal on conditions 1-2, but BAR CHART (sorted) - condition 3 fails
+      because the reader must order close values, and position beats angle (W2).
+
+(c) premium vs other, 2025Q4 (case09_premium_share.csv)
+    1 exclusive? True by construction: other = total - premium, both >= 0 in all 8 quarters (True); 228.0 + 372.0 = 600.0 PKR m
+    2 meaningful whole? Yes - total revenue for the quarter.
+    3 share the question? For the single quarter yes (premium = 38.0%), but the
+      CLAIM is 'a record', which is about change - and the whole fell from 1000 to 600.
+    VERDICT: a two-slice pie (or one stacked bar) is LEGAL for 2025Q4 alone, since
+      two exclusive parts of a real whole is the pie's best case. It is NOT enough
+      for the claim: show premium and other in PKR m beside the share (Part A case 9).
+
+stimuli written: pie_stimulus.png, bars_stimulus.png  (300 dpi)
+
+==============================================================================
+C.2 / C.3  RESULTS FROM THE REAL READER(S)
+==============================================================================
+NO READER DATA YET. Run:  python3 partC_shares.py --run
+(Nothing is scored or reported until a person has actually done it.)
+
+==============================================================================
+C.4  MY RULE
+==============================================================================
+  I will draw a pie only when there are two or three exclusive parts of a
+  meaningful whole, the part-to-whole share itself is the question, and nobody
+  needs to rank or compare close slices - otherwise a sorted bar chart.

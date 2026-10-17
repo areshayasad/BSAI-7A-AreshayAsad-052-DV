@@ -1,0 +1,204 @@
+{
+ "yoy_sep": 37.041906102177144,
+ "bf": 113710.0,
+ "weekend_gap_pct": 34.51205966813185,
+ "peak": "Sat 20:00",
+ "shares": {
+  "Phones": 24.75,
+  "Laptops": 18.22,
+  "Audio": 14.98,
+  "Accessories": 13.33,
+  "Footwear": 10.99,
+  "Wearables": 9.36,
+  "Cameras": 5.97,
+  "Drones": 2.41
+ },
+ "top_cat_share": {
+  "Mobile": 38.07,
+  "Audio & Imaging": 23.36,
+  "Lifestyle": 20.35,
+  "Computing": 18.22
+ },
+ "max_diff_vs_file": 0.2281493401153476,
+ "palette_proof": {
+  "normal": 16.4,
+  "deutan": 7.5,
+  "protan": 9.5,
+  "tritan": 8.4
+ },
+ "n_missing_days": 13,
+ "n_topped": 222,
+ "trough_1": "2024-04-02",
+ "trough_2": "2025-06-06",
+ "other_note": "no categories below 1.0%",
+ "neg": {
+  "n": 7,
+  "total": -1.0693000000000001
+ },
+ "wearables": {
+  "before": 10.125622100220774,
+  "after": 9.346945727764382
+ },
+ "log": [
+  {
+   "step": "timestamp parse",
+   "rule": "ISO rows parsed as YYYY-MM-DD HH:MM:SS; slash rows parsed as DD/MM/YYYY (day first - proved: first field >12 on 2151 rows, second field >12 on 0 rows)",
+   "n": 3651,
+   "detail": "3651 slash rows; 1500 of them have both fields <=12 and are only resolved by that evidence (118 have day==month and are safe either way). pd.to_datetime(format='mixed') would put 1382 rows on the wrong date and stretch the index to 2024-01-04 .. 2025-12-08 instead of 2024-04-01 .. 2025-09-11",
+   "mixed_range": [
+    "2024-01-04 01:00:00",
+    "2025-12-08 22:00:00"
+   ],
+   "rows_moved_by_mixed": 1382,
+   "n_slash": 3651,
+   "n_iso": 9019,
+   "n_ambiguous": 1500,
+   "n_same": 118,
+   "n_first_gt12": 2151,
+   "n_second_gt12": 0
+  },
+  {
+   "step": "device labels",
+   "rule": "strip, lower-case, Title-case",
+   "n": 1447,
+   "detail": "6 spellings -> 3 (Desktop, Mobile, Tablet); 1447 rows relabelled, none removed"
+  },
+  {
+   "step": "exact duplicates",
+   "rule": "drop a row whose timestamp AND every value repeat an earlier row (keep first)",
+   "n": 286,
+   "detail": "12,670 -> 12,384 rows; total valid sessions 12,010,834 -> 11,727,160 (-2.36%)",
+   "rows_before": 12670,
+   "rows_after": 12384,
+   "total_before": 12010834,
+   "total_after": 11727160
+  },
+  {
+   "step": "sort",
+   "rule": "sort_values on the parsed timestamp",
+   "n": 0,
+   "detail": "file was in time order: False; now monotonic: True"
+  },
+  {
+   "step": "sessions sentinel",
+   "rule": "sessions == -1 is 'no reading': set to NaN (not 0, not dropped); orders and revenue on that row are kept",
+   "n": 287,
+   "detail": "mean sessions/hour 946.9 -> 969.4",
+   "mean_before": 946.937419250646,
+   "mean_after": 969.4271306935603
+  },
+  {
+   "step": "missing periods",
+   "rule": "reindex onto the complete hourly calendar; never fill, never zero",
+   "n": 312,
+   "detail": "312 missing hours = 13 whole days (every gap is a multiple of 24 h; no partial days). Days: 18 May 2024, 02 Jul 2024, 03 Jul 2024, 27 Sep 2024, 11 Nov 2024, 25 Dec 2024, 01 Jan 2025, 14 Feb 2025, 30 Mar 2025, 31 Mar 2025, 07 Jun 2025, 19 Jul 2025, 23 Aug 2025",
+   "missing_days": [
+    "2024-05-18",
+    "2024-07-02",
+    "2024-07-03",
+    "2024-09-27",
+    "2024-11-11",
+    "2024-12-25",
+    "2025-01-01",
+    "2025-02-14",
+    "2025-03-30",
+    "2025-03-31",
+    "2025-06-07",
+    "2025-07-19",
+    "2025-08-23"
+   ]
+  },
+  {
+   "step": "partial final month",
+   "rule": "kept, shaded and labelled; never compared as a month",
+   "n": 0,
+   "detail": "September 2025: 11 of 30 days (extract ends 11 Sep 2025 23:00)"
+  },
+  {
+   "step": "daily aggregation",
+   "rule": "flow -> sum() of the 24 hourly counts. On a day with sentinel hours the observed sum is divided by the share of a typical (same weekday) day that those hours carry, so a missing evening hour does not look like a dip. Days with no data stay NaN.",
+   "n": 222,
+   "detail": "222 days topped up (mean +5.8%, max +19.8%); 13 days NaN; 516 days observed",
+   "n_topped": 222,
+   "adj_mean": 5.756288347706637,
+   "adj_max": 19.754032935003995
+  },
+  {
+   "step": "duplicate SKU",
+   "n": 1,
+   "rule": "a SKU may have one parent. SKU-0127 (name AUDI-04) is listed under Audio and again under Lifestyle > Wearables; the name prefix says Audio, so the second listing (last row of the file) is removed",
+   "detail": "345 -> 344 rows; Wearables share 10.13% -> 9.35%; removed SKU(s): SKU-0127 (14.83 PKR m)"
+  },
+  {
+   "step": "negative net revenue",
+   "n": 7,
+   "rule": "negatives have no area: removed from the area encoding, reported separately",
+   "detail": "7 SKUs, -1.07 PKR m in total (-0.062% of net); catalogue net 1,711.4 -> 1,712.5 PKR m"
+  }
+ ],
+ "audit_before": {
+  "dtype_ok": true,
+  "monotonic": false,
+  "n_rows": 12670,
+  "n_duplicated": 286,
+  "n_missing": 312,
+  "missing_dates": [
+   "2024-05-18 00:00:00",
+   "2024-05-18 01:00:00",
+   "2024-05-18 02:00:00",
+   "2024-05-18 03:00:00",
+   "2024-05-18 04:00:00",
+   "2024-05-18 05:00:00",
+   "2024-05-18 06:00:00",
+   "2024-05-18 07:00:00",
+   "2024-05-18 08:00:00",
+   "2024-05-18 09:00:00",
+   "2024-05-18 10:00:00",
+   "2024-05-18 11:00:00"
+  ],
+  "span": [
+   "2024-04-01 00:00:00",
+   "2025-09-11 23:00:00"
+  ],
+  "partial_tail": false,
+  "tail_period": "2025-09-11",
+  "tail_count": 24
+ },
+ "audit_after": {
+  "dtype_ok": true,
+  "monotonic": true,
+  "n_rows": 12384,
+  "n_duplicated": 0,
+  "n_missing": 312,
+  "missing_dates": [
+   "2024-05-18 00:00:00",
+   "2024-05-18 01:00:00",
+   "2024-05-18 02:00:00",
+   "2024-05-18 03:00:00",
+   "2024-05-18 04:00:00",
+   "2024-05-18 05:00:00",
+   "2024-05-18 06:00:00",
+   "2024-05-18 07:00:00",
+   "2024-05-18 08:00:00",
+   "2024-05-18 09:00:00",
+   "2024-05-18 10:00:00",
+   "2024-05-18 11:00:00"
+  ],
+  "span": [
+   "2024-04-01 00:00:00",
+   "2025-09-11 23:00:00"
+  ],
+  "partial_tail": false,
+  "tail_period": "2025-09-11",
+  "tail_count": 24
+ },
+ "day_means": [
+  872.0,
+  877.1,
+  872.5,
+  874.4,
+  923.2,
+  1184.6,
+  1192.6
+ ]
+}

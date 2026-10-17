@@ -1,0 +1,111 @@
+{
+ "window_report": [
+  {
+   "window": 7,
+   "raw_sd": 6844.2291,
+   "smoothed_sd": 4733.2527,
+   "variation_removed_pct": 30.8,
+   "periods_lost_each_end": 3,
+   "weekly_swing_left_pct": 0.2,
+   "wave_range": 25323.0,
+   "wave_kept_vs_7d_pct": 100.0,
+   "pct_of_series_lost_at_ends": 1.1
+  },
+  {
+   "window": 28,
+   "raw_sd": 6844.2291,
+   "smoothed_sd": 4528.4541,
+   "variation_removed_pct": 33.8,
+   "periods_lost_each_end": 14,
+   "weekly_swing_left_pct": 0.1,
+   "wave_range": 15678.0,
+   "wave_kept_vs_7d_pct": 61.9,
+   "pct_of_series_lost_at_ends": 5.3
+  },
+  {
+   "window": 91,
+   "raw_sd": 6844.2291,
+   "smoothed_sd": 4237.5315,
+   "variation_removed_pct": 38.1,
+   "periods_lost_each_end": 45,
+   "weekly_swing_left_pct": 0.0,
+   "wave_range": 12526.0,
+   "wave_kept_vs_7d_pct": 49.5,
+   "pct_of_series_lost_at_ends": 17.0
+  }
+ ],
+ "smoothers": {
+  "raw": 113710.0,
+  "median14": 24780.5,
+  "mean": 33480.0480858121,
+  "median": 24780.5,
+  "ewma": 38049.87064009411
+ },
+ "decompose": {
+  "amp": 7578.244335141047,
+  "big": "2024-11-29",
+  "resid": 74597.21720013113,
+  "p365": "x must have 2 complete cycles requires 730 observations. x only has 529 observation(s)"
+ },
+ "lag": {
+  "trailing": "2025-06-11",
+  "centred": "2025-05-27",
+  "lag": 15,
+  "half": 15
+ },
+ "sweep": {
+  "rising": 34,
+  "falling": 26,
+  "total": 60,
+  "full_slope": 21.594429598593567,
+  "by_window": [
+   {
+    "window_days": 7,
+    "rising": 5,
+    "falling": 7
+   },
+   {
+    "window_days": 14,
+    "rising": 7,
+    "falling": 5
+   },
+   {
+    "window_days": 28,
+    "rising": 7,
+    "falling": 5
+   },
+   {
+    "window_days": 56,
+    "rising": 8,
+    "falling": 4
+   },
+   {
+    "window_days": 91,
+    "rising": 7,
+    "falling": 5
+   }
+  ]
+ },
+ "sensitivity": {
+  "A": {
+   "fortnight median": 24780.5,
+   "14d centred mean": 33480.0480858121,
+   "14d centred median": 24780.5,
+   "EWMA span 14": 38049.87064009411,
+   "weekly p2p": 7578.244335141047,
+   "largest resid date": "2024-11-29",
+   "lag (days)": 15,
+   "rising / falling of 60": "34 / 26"
+  },
+  "B": {
+   "fortnight median": 24698.0,
+   "14d centred mean": 32871.0,
+   "14d centred median": 24698.0,
+   "EWMA span 14": 37537.15000387868,
+   "weekly p2p": 7351.590965250965,
+   "largest resid date": "2024-11-29",
+   "lag (days)": 15,
+   "rising / falling of 60": "32 / 28"
+  }
+ }
+}

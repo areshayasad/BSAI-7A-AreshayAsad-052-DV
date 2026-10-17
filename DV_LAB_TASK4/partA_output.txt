@@ -1,0 +1,30 @@
+
+CASE 1  orders / string months
+   self-check 24 points                                              PASS   (24)
+   self-check drops of 958 and 978                                   PASS   ([958, 978])
+
+CASE 2  sales / shop closed
+   self-check 69 points, first 207, last 253, +22%                   PASS   (207->253)
+
+CASE 3  bandwidth / level summed
+   self-check June ~8,800, July ~12,500, +43%                        PASS   (8,782 -> 12,543)
+
+CASE 4  conversion / trailing mean
+   self-check trailing mean bottoms out 2025-09-07                   PASS   (2025-09-07)
+
+CASE 5  revenue / cherry-picked window
+   self-check 7 points, 158.8 -> 92.2, -41.9%                        PASS   (158.8 -> 92.2)
+
+CASE 6  orders / partial October
+   self-check ten bars; Sep 10,805; Oct 4,041 (37%)                  PASS   (10805, 4041)
+
+CASE 7  stacked products / the column nobody isolates
+   self-check envelope ~548 .. ~709                                  PASS   (548.3 .. 708.7)
+
+CASE 8  channel attribution / non-exclusive
+   self-check search 42.6 social 32.3 email 27.5 direct 28.6         PASS   ([42.62, 32.3, 27.48, 28.58])
+
+CASE 9  premium share / shrinking denominator
+   self-check share 24.0% -> 38.0%                                   PASS   (24.0 -> 38.0)
+
+all nine rebuilds hit their self-check numbers; 18 figures written to figs/

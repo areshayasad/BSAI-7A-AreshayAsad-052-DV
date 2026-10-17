@@ -1,0 +1,10 @@
+pandas>=2.0
+numpy
+matplotlib
+seaborn
+scipy
+statsmodels
+squarify
+reportlab
+pypdf
+pillow

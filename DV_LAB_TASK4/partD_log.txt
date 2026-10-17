@@ -1,0 +1,60 @@
+============================================================================
+AUDIT - sessions_hourly.csv  (tslib.audit_index on the hourly index)
+============================================================================
+  before cleaning: rows=12,670 dtype_ok=True monotonic=False duplicated=286 missing_hours=312 span=2024-04-01 00:00:00 .. 2025-09-11 23:00:00
+  after  cleaning: rows=12,384 dtype_ok=True monotonic=True duplicated=0 missing_hours=312 partial_tail=False (2025-09-11: 24 hourly rows)
+  index min/max: 2024-04-01 00:00:00 .. 2025-09-11 23:00:00  (expected 2024-04-01 00:00 .. 2025-09-11 23:00)
+
+DATA PROBLEMS HANDLED - each with its rule
+  [timestamp parse]  n=3651
+      rule  : ISO rows parsed as YYYY-MM-DD HH:MM:SS; slash rows parsed as DD/MM/YYYY (day first - proved: first field >12 on 2151 rows, second field >12 on 0 rows)
+      effect: 3651 slash rows; 1500 of them have both fields <=12 and are only resolved by that evidence (118 have day==month and are safe either way). pd.to_datetime(format='mixed') would put 1382 rows on the wrong date and stretch the index to 2024-01-04 .. 2025-12-08 instead of 2024-04-01 .. 2025-09-11
+  [device labels]  n=1447
+      rule  : strip, lower-case, Title-case
+      effect: 6 spellings -> 3 (Desktop, Mobile, Tablet); 1447 rows relabelled, none removed
+  [exact duplicates]  n=286
+      rule  : drop a row whose timestamp AND every value repeat an earlier row (keep first)
+      effect: 12,670 -> 12,384 rows; total valid sessions 12,010,834 -> 11,727,160 (-2.36%)
+  [sort]  n=0
+      rule  : sort_values on the parsed timestamp
+      effect: file was in time order: False; now monotonic: True
+  [sessions sentinel]  n=287
+      rule  : sessions == -1 is 'no reading': set to NaN (not 0, not dropped); orders and revenue on that row are kept
+      effect: mean sessions/hour 946.9 -> 969.4
+  [missing periods]  n=312
+      rule  : reindex onto the complete hourly calendar; never fill, never zero
+      effect: 312 missing hours = 13 whole days (every gap is a multiple of 24 h; no partial days). Days: 18 May 2024, 02 Jul 2024, 03 Jul 2024, 27 Sep 2024, 11 Nov 2024, 25 Dec 2024, 01 Jan 2025, 14 Feb 2025, 30 Mar 2025, 31 Mar 2025, 07 Jun 2025, 19 Jul 2025, 23 Aug 2025
+  [partial final month]  n=0
+      rule  : kept, shaded and labelled; never compared as a month
+      effect: September 2025: 11 of 30 days (extract ends 11 Sep 2025 23:00)
+  [daily aggregation]  n=222
+      rule  : flow -> sum() of the 24 hourly counts. On a day with sentinel hours the observed sum is divided by the share of a typical (same weekday) day that those hours carry, so a missing evening hour does not look like a dip. Days with no data stay NaN.
+      effect: 222 days topped up (mean +5.8%, max +19.8%); 13 days NaN; 516 days observed
+  [duplicate SKU]  n=1
+      rule  : a SKU may have one parent. SKU-0127 (name AUDI-04) is listed under Audio and again under Lifestyle > Wearables; the name prefix says Audio, so the second listing (last row of the file) is removed
+      effect: 345 -> 344 rows; Wearables share 10.13% -> 9.35%; removed SKU(s): SKU-0127 (14.83 PKR m)
+  [negative net revenue]  n=7
+      rule  : negatives have no area: removed from the area encoding, reported separately
+      effect: 7 SKUs, -1.07 PKR m in total (-0.062% of net); catalogue net 1,711.4 -> 1,712.5 PKR m
+
+HIERARCHY SELF-CHECK vs shares_eight.csv  (limit: 0.3 percentage points)
+   Phones       mine  24.75%  file  24.60%  diff +0.15
+   Laptops      mine  18.22%  file  18.40%  diff -0.18
+   Audio        mine  14.98%  file  15.00%  diff -0.02
+   Accessories  mine  13.33%  file  13.10%  diff +0.23
+   Footwear     mine  10.99%  file  11.20%  diff -0.21
+   Wearables    mine   9.36%  file   9.20%  diff +0.16
+   Cameras      mine   5.97%  file   6.10%  diff -0.13
+   Drones       mine   2.41%  file   2.40%  diff +0.01
+   max |diff| = 0.23 pp  ->  PASS
+   Other bucket: no categories below 1.0%
+   negatives not drawn: 7 SKUs, -1.07 PKR m
+
+PALETTE PROOF (vizlib.worst_pair, every pair, OKLab dE x100)
+   normal  closest pair: slots 2&4 #D55E00 / #CC79A7  dE=16.4
+   deutan  closest pair: slots 3&4 #009E73 / #CC79A7  dE=7.5
+   protan  closest pair: slots 1&4 #0072B2 / #CC79A7  dE=9.5
+   tritan  closest pair: slots 1&3 #0072B2 / #009E73  dE=8.4
+   4th hue (#CC79A7) is below 3:1 contrast and has a thin CVD margin, so every parent is also named in text on the treemap and in the bar legend.
+
+saved partD_figure.png

@@ -1,0 +1,101 @@
+==============================================================================
+PART B - computed on the cleaned DAILY session series (sum of hourly flow)
+  2024-04-01 .. 2025-09-11   529 calendar days, 13 missing (NaN), 516 observed;  mean 23,259/day
+==============================================================================
+
+B1  THE WINDOW IS A HYPOTHESIS  (tslib.window_report, centred)
+ window    raw_sd  smoothed_sd  variation_removed_pct  periods_lost_each_end  weekly_swing_left_pct  wave_range  wave_kept_vs_7d_pct  pct_of_series_lost_at_ends
+      7 6844.2291    4733.2527                   30.8                      3                    0.2     25323.0                100.0                         1.1
+     28 6844.2291    4528.4541                   33.8                     14                    0.1     15678.0                 61.9                         5.3
+     91 6844.2291    4237.5315                   38.1                     45                    0.0     12526.0                 49.5                        17.0
+
+  raw weekly swing (Sat/Sun vs Mon-Thu, peak-to-trough of the day-of-week profile) = 7,562 sessions/day
+  cycle each window removes:
+    7  : the weekly cycle, exactly (7 is one full period) - and nothing slower.
+    28 : the weekly cycle (4 whole weeks) plus about one calendar month of
+         wobble. Slower waves survive.
+    91 : the weekly cycle and the month, and it also begins to eat the annual
+         wave itself: only 50% of the 7-day wave range
+         survives, and 45 days are lost at EACH end
+         (17% of a 529-day series).
+  CHOICE for Part D: 7 days. The cycle I am cancelling is weekly (Sat/Sun daily
+  totals run 35% above Mon-Fri), and 7 is the shortest window that cancels it exactly.
+  A window that is not a multiple of 7 would leave a weekday-dependent ripple;
+  anything longer than 28 starts to cancel the seasonal turn the board keeps
+  missing. 'Variation removed' rises with the window by construction, so it
+  cannot pick the window - the cycle does. (Fixed before plotting.)
+
+B2  THREE SMOOTHERS AGAINST ONE SPIKE  (29 Nov 2024, Black Friday)
+  raw value                          113,710
+  fortnight median (22 Nov-5 Dec)     24,780   <- 'normal'
+  14-day centred MEAN                 33,480   (1.35x normal)
+  14-day centred MEDIAN               24,780   (1.00x normal)
+  EWMA (span 14, trailing)            38,050   (1.54x normal)
+  -> the mean and the EWMA smear one day's 113,710 across the neighbours and
+     make the BASELINE look 35% and 54% higher; the median ignores it.
+  Monitoring dashboard : EWMA. It needs no future data, reacts the day the
+     spike arrives (so an alert can fire), then decays instead of leaving a
+     14-day plateau. Plot the raw spike beside it - it is the thing to see.
+  Quarterly report    : centred 14-day MEDIAN. A one-day event should not
+     move the trajectory; the report states the event separately
+     ('Black Friday: 113,710') rather than letting a mean spread it.
+
+B3  DECOMPOSE IT  (statsmodels seasonal_decompose on the gap-filled series)
+  weekly seasonal component: peak-to-trough = 7,578 sessions/day (Sunday +5,242, Wednesday -2,337)
+  largest residual: 29 Nov 2024  = +74,597 sessions (next largest: 13,185)
+  Everything explainable (trend + weekly rhythm) is gone; what is left on
+  29 Nov 2024 is Black Friday - the event worth investigating.
+  period=365: statsmodels refuses - "x must have 2 complete cycles requires 730 observations. x only has 529 observation(s)".
+  (a year-long period needs 2 full cycles = 730 daily points; there are 529.)
+  In one sentence: with a 365-day period, anything that recurs on the same
+  calendar day each year (Black Friday, an Eid sale) would move out of `resid`
+  and into `seasonal` - but with 1.45 years of data a once-a-year event and a
+  one-off are indistinguishable, which is exactly why it cannot be run here.
+
+B4  TRAILING OR CENTRED  (tslib.lag_at_turn, 31-day window)
+  turn = the spring-2025 trough, searched in 01 Jan 2025 onward
+  centred  window finds the minimum on 27 May 2025
+  trailing window finds the minimum on 11 Jun 2025
+  lag = 15 days   vs   half-window = 15 days
+  The lag is arithmetic, not a bug: a trailing mean cannot know about a turn
+  until the window has filled with post-turn days, i.e. about half a window.
+  A live dashboard refreshes every morning and has no future data, so it MUST
+  show the trailing mean. Its caption must say: '31-day trailing mean - turning
+  points show up about 15 days after they happen'.
+
+B5  THE WINDOW IS A CLAIM  (12 start months x 5 window lengths = 60 fits)
+  start months: Apr 2024 .. Mar 2025 (the first 12 month-starts of the series - chosen BEFORE looking)
+  RISING trends : 34   FALLING trends : 26   (of 60)
+ window_days  rising  falling
+           7       5        7
+          14       7        5
+          28       7        5
+          56       8        4
+          91       7        5
+  the whole series (no window chosen) rises +21.6 sessions/day per day
+  Lie Factor = (effect shown) / (effect in the data). It presumes the data
+  HAS one effect to divide by. For a cherry-picked window there is no such
+  denominator: the same unchanged series contains rising AND falling 'effects'
+  depending on where you start and how long you look, so every window is its
+  own numerator with nothing agreed to put underneath it. (And the 'ink' is
+  not wrong - the slope IS that in that window; the framing is.)
+  The honest substitute: report the sensitivity itself - the share of
+  start/window choices that agree with the one shown (here 34/60), show the full-range line, and
+  state how the window was chosen (a specification curve).
+
+SENSITIVITY - does the treatment of the 287 sentinel hours change any answer?
+  A = series used above (sentinel hours topped up from the same-weekday profile)
+  B = plain sum of the hours that were recorded (the brief quotes a fortnight
+      median of 'about 24,600' - B is the closer match)
+  quantity                   A (topped up)   B (plain sum)
+  fortnight median                  24,780          24,698
+  14d centred mean                  33,480          32,871
+  14d centred median                24,780          24,698
+  EWMA span 14                      38,050          37,537
+  weekly p2p                         7,578           7,352
+  largest resid date            2024-11-29      2024-11-29
+  lag (days)                            15              15
+  rising / falling of 60           34 / 26         32 / 28
+  Same spike date, same lag, same ordering of the three smoothers, and the
+  window sweep forks under both (34/26 vs 32/28): the sentinel treatment moves
+  levels by under ~3% and changes no conclusion. Series A is used throughout.

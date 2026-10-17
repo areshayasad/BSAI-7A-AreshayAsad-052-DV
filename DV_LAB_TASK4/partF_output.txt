@@ -1,0 +1,44 @@
+==============================================================================
+PART F - is the seasonality growing, or the series? (REAL data, BLS via vega-datasets)
+==============================================================================
+source: https://raw.githubusercontent.com/vega/vega-datasets/main/data/unemployment-across-industries.json
+downloaded 2026-10-18; categories (industries): 14; rows 1,708; each industry 122 months
+
+AUDIT (tslib.audit_index, freq MS) on Construction:
+  dtype_ok=True  monotonic=True  duplicated=0  missing months=0  span=2000-01-01 .. 2010-02-01
+  partial_tail=True (last year 2010 has only 2 month(s) of 12)
+  -> 122 months = 10 complete years (2000-2009) + Jan-Feb 2010. The partial 2010 is kept in the series plots, but excluded from every per-year statistic below.
+
+PER-YEAR (2000-2009): mean level x3.45, absolute swing (max-min) x1.17
+         mean   min   max  swing  swing_pct_of_mean
+month                                              
+2000    512.8   384   812    428               83.5
+2001    609.2   443   836    393               64.5
+2002    799.7   593  1211    618               77.3
+2003    809.6   650  1196    546               67.4
+2004    769.0   563  1039    476               61.9
+2005    712.2   509  1150    641               90.0
+2006    670.8   456   868    412               61.4
+2007    757.2   558  1086    528               69.7
+2008   1029.8   783  1438    655               63.6
+2009   1770.4  1542  2044    502               28.4
+  corr(level, absolute swing)      = +0.23
+  corr(level, swing as % of level) = -0.83
+
+DECOMPOSITIONS (period 12):
+  additive        seasonal peak-to-trough = 489 thousand persons
+  multiplicative  seasonal factor range   = 0.79 .. 1.40
+  size of residual vs level (Spearman rho of |resid| with trend):
+      additive residual        rho = +0.13
+      multiplicative residual  rho = +0.03
+  -> the multiplicative model leaves residuals that depend less on the level.
+
+ASPECT RATIO of panel 1 (banked to 45 degrees, tslib.banked_figsize): 9.0 wide x 2.32 high = 3.9 : 1
+
+ANSWER (two sentences):
+  Between 2000 and 2009 the series' level rose x3.5 but its absolute seasonal swing moved only x1.2, so the swing fell from 83% to 28% of the level (corr of level with swing-as-%-of-level -0.83).
+  So the seasonality is NOT growing in proportion to the series, and 'the series is just growing' does not explain the swing either: in this recession the extra unemployed were added year-round (additive), not as a bigger winter surge.
+  Caveat: the residual test is weak for BOTH models (|rho| 0.13 additive, 0.03 multiplicative, both under 0.15) and slightly favours the multiplicative model, so it
+  does not overturn the per-year result; the multiplicative decomposition also forces a constant
+  proportion that the per-year numbers contradict. One series in one recession; it need not agree
+  with the Week 1 flights case, and the disagreement is reported as found.
